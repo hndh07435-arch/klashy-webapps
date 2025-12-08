@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <title>🤖 الذكاء الاصطناعي</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body style="background:#000; color:#0f0; padding:50px; font-family:monospace;">
+    <h1>🤖 مساعد KLASH الذكي</h1>
+    <input type="text" placeholder="اكتب سؤالك..." id="question">
+    <button onclick="askAI()">🔍 ابحث</button>
+    <div id="answer"></div>
+    
+    <script>
+        function askAI() {
+            let question = document.getElementById('question').value;
+            let answers = [
+                "أهلاً بك! أنا مساعد KLASH.",
+                "يمكنني مساعدتك في إنشاء رواقع ويب.",
+                "جرب سؤالاً آخر.",
+                "النظام يعمل بنجاح!"
+            ];
+            let randomAnswer = answers[Math.floor(Math.random() * answers.length)];
+            
+            document.getElementById('answer').innerHTML = 
+                `<p><strong>السؤال:</strong> ${question}</p>
+                 <p><strong>الإجابة:</strong> ${randomAnswer}</p>`;
+        }
+    </script>
+</body>
+</html>
