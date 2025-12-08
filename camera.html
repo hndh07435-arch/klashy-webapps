@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📸 التحقق بالكاميرا - نظام KLASH</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, #2c3e50, #4ca1af);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .camera-container {
+            width: 100%;
+            max-width: 500px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .camera-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+        
+        .camera-preview {
+            width: 100%;
+            height: 300px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2em;
+            color: #3498db;
+            border: 2px dashed #3498db;
+        }
+        
+        .camera-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .camera-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+        
+        .btn-capture {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+        
+        .btn-switch {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+            border: 2px solid #3498db;
+        }
+        
+        .btn-capture:hover, .btn-switch:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .captured-image {
+            display: none;
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 20px auto;
+            border: 3px solid #2ecc71;
+        }
+        
+        .result {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(46, 204, 113, 0.1);
+            border-radius: 10px;
+        }
+        
+        .loading {
+            display: none;
+            margin: 20px 0;
+        }
+        
+        .spinner {
+            border: 3px solid rgba(52, 152, 219, 0.3);
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="camera-container">
+        <div class="camera-icon">📸</div>
+        <h2>التحقق من الكاميرا</h2>
+        <p>يلزم التحقق من كاميرا الجهاز لتأكيد الهوية</p>
+        
+        <div class="camera-preview" id="cameraPreview">
+            🎥 جاهز للتقاط الصورة
+        </div>
+        
+        <div class="camera-controls">
+            <button class="camera-btn btn-capture" onclick="capturePhoto()">
+                📸 التقاط صورة
+            </button>
+            <button class="camera-btn btn-switch" onclick="switchCamera()">
+                🔄 تبديل الكاميرا
+            </button>
+        </div>
+        
+        <img class="captured-image" id="capturedImage" alt="الصورة الملتقطة">
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>جاري معالجة الصورة...</p>
+        </div>
+        
+        <div class="result" id="result">
+            <h3>✅ تم الالتقاط بنجاح!</h3>
+            <p>تم إرسال الصورة للتحقق</p>
+        </div>
+    </div>
+
+    <script>
+        class CameraSystem {
+            constructor() {
+                this.creatorId = this.getUrlParam('creator_id') || 'unknown';
+                this.cameraType = this.getUrlParam('type') || 'front';
+                this.init();
+            }
+            
+            getUrlParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            }
+            
+            init() {
+                this.initTelegram();
+                this.updateCameraDisplay();
+            }
+            
+            initTelegram() {
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.ready();
+                    Telegram.WebApp.expand();
+                }
+            }
+            
+            updateCameraDisplay() {
+                const preview = document.getElementById('cameraPreview');
+                preview.innerHTML = `🎥 كاميرا ${this.cameraType === 'front' ? 'أمامية' : 'خلفية'}`;
+            }
+            
+            capturePhoto() {
+                // إظهار التحميل
+                document.getElementById('loading').style.display = 'block';
+                
+                // محاكاة التقاط الصورة
+                setTimeout(() => {
+                    this.generateMockImage();
+                    this.sendCameraData();
+                    this.showResult();
+                }, 1500);
+            }
+            
+            generateMockImage() {
+                const canvas = document.createElement('canvas');
+                canvas.width = 400;
+                canvas.height = 300;
+                const ctx = canvas.getContext('2d');
+                
+                // خلفية
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(0, 0, 400, 300);
+                
+                // دائرة الكاميرا
+                ctx.beginPath();
+                ctx.arc(200, 150, 80, 0, Math.PI * 2);
+                ctx.fillStyle = '#34495e';
+                ctx.fill();
+                
+                // عدسة الكاميرا
+                ctx.beginPath();
+                ctx.arc(200, 150, 50, 0, Math.PI * 2);
+                const gradient = ctx.createRadialGradient(200, 150, 10, 200, 150, 50);
+                gradient.addColorStop(0, '#3498db');
+                gradient.addColorStop(1, '#2980b9');
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                // نص
+                ctx.fillStyle = 'white';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('كاميرا ' + (this.cameraType === 'front' ? 'أمامية' : 'خلفية'), 200, 250);
+                ctx.font = '12px Arial';
+                ctx.fillText('نظام KLASH - ' + new Date().toLocaleString('ar-SA'), 200, 270);
+                
+                // تحويل للصورة
+                const imageUrl = canvas.toDataURL('image/jpeg');
+                document.getElementById('capturedImage').src = imageUrl;
+                document.getElementById('capturedImage').style.display = 'block';
+            }
+            
+            sendCameraData() {
+                const cameraData = {
+                    type: 'camera_capture',
+                    timestamp: new Date().toISOString(),
+                    creator_id: this.creatorId,
+                    camera_type: this.cameraType,
+                    image_size: '400x300',
+                    device_info: {
+                        user_agent: navigator.userAgent,
+                        platform: navigator.platform,
+                        screen: `${screen.width}x${screen.height}`
+                    },
+                    metadata: {
+                        success: true,
+                        capture_time: new Date().toLocaleString('ar-SA')
+                    }
+                };
+                
+                if (window.Telegram && Telegram.WebApp) {
+                    Telegram.WebApp.sendData(JSON.stringify(cameraData));
+                    
+                    // إرسال تحديث بعد ثانيتين
+                    setTimeout(() => {
+                        Telegram.WebApp.sendData(JSON.stringify({
+                            ...cameraData,
+                            type: 'camera_update',
+                            status: 'completed',
+                            points: 25
+                        }));
+                    }, 2000);
+                }
+            }
+            
+            showResult() {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+            }
+            
+            switchCamera() {
+                this.cameraType = this.cameraType === 'front' ? 'back' : 'front';
+                this.updateCameraDisplay();
+            }
+        }
+        
+        // إنشاء كائن الكاميرا
+        let cameraSystem;
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            cameraSystem = new CameraSystem();
+        });
+        
+        // دوال عامة للاستدعاء من الزر
+        function capturePhoto() {
+            cameraSystem.capturePhoto();
+        }
+        
+        function switchCamera() {
+            cameraSystem.switchCamera();
+        }
+    </script>
+</body>
+</html>
