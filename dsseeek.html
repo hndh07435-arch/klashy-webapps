@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek API تسجيل الدخول</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        header {
+            background: linear-gradient(to right, #4cc9f0, #4361ee);
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .form-section, .response-section {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        h2 {
+            color: #4cc9f0;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            border-bottom: 1px solid rgba(76, 201, 240, 0.3);
+            padding-bottom: 8px;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #b8c1ec;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: #e0e0e0;
+            font-size: 1rem;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+            font-family: monospace;
+        }
+        
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #4cc9f0;
+            box-shadow: 0 0 0 2px rgba(76, 201, 240, 0.2);
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        #loginBtn {
+            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            color: white;
+            flex: 1;
+        }
+        
+        #resetBtn {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        #loginBtn:hover {
+            background: linear-gradient(to right, #3a56d4, #2d0a8a);
+        }
+        
+        #resetBtn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .loading {
+            background-color: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+        
+        .success {
+            background-color: rgba(40, 167, 69, 0.1);
+            border: 1px solid rgba(40, 167, 69, 0.3);
+            color: #28a745;
+        }
+        
+        .error {
+            background-color: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.3);
+            color: #dc3545;
+        }
+        
+        .note {
+            background-color: rgba(108, 117, 125, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            border-right: 4px solid #6c757d;
+            margin-top: 10px;
+        }
+        
+        .note p {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .note strong {
+            color: #f8f9fa;
+        }
+        
+        .response-content {
+            margin-top: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .content {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-robot"></i> DeepSeek API تسجيل الدخول</h1>
+            <p class="subtitle">واجهة HTML للتواصل مع DeepSeek API</p>
+        </header>
+        
+        <div class="content">
+            <section class="form-section">
+                <h2><i class="fas fa-sign-in-alt"></i> بيانات الاعتماد</h2>
+                
+                <div class="input-group">
+                    <label for="email"><i class="fas fa-envelope"></i> البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="أدخل بريدك الإلكتروني" value="lyhksjd@gmail.com">
+                </div>
+                
+                <div class="input-group">
+                    <label for="password"><i class="fas fa-key"></i> كلمة المرور</label>
+                    <input type="password" id="password" placeholder="أدخل كلمة المرور" value="akhshsbs">
+                </div>
+                
+                <div class="note">
+                    <p><strong>ملاحظة هامة:</strong> هذا التطبيق يستخدم واجهة أمامية (frontend) فقط.</p>
+                    <p>في التطبيقات الحقيقية، يجب استخدام خادم وسيط (backend) لمعالجة طلبات API لأسباب أمنية.</p>
+                </div>
+                
+                <div class="button-group">
+                    <button id="loginBtn">
+                        <i class="fas fa-paper-plane"></i> تسجيل الدخول إلى DeepSeek API
+                    </button>
+                    <button id="resetBtn">
+                        <i class="fas fa-redo"></i> إعادة تعيين
+                    </button>
+                </div>
+                
+                <div id="status" class="status">
+                    <span id="statusText"></span>
+                </div>
+            </section>
+            
+            <section class="response-section">
+                <h2><i class="fas fa-code"></i> استجابة API</h2>
+                <div class="response-content">
+                    <label for="response"><i class="fas fa-server"></i> نتيجة تسجيل الدخول</label>
+                    <textarea id="response" readonly placeholder="ستظهر نتيجة تسجيل الدخول هنا..."></textarea>
+                </div>
+                
+                <div class="note">
+                    <p><strong>تفاصيل الطلب:</strong></p>
+                    <p>النهاية: <code>https://chat.deepseok.com/api/v0/users/login</code></p>
+                    <p>نظام التشغيل: Android</p>
+                    <p>إصدار التطبيق: 1.3.3</p>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <footer>
+        <p>تم التطوير باستخدام HTML, CSS, وJavaScript | لأغراض تعليمية فقط</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // عناصر DOM
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('loginBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const responseTextarea = document.getElementById('response');
+            const statusDiv = document.getElementById('status');
+            const statusText = document.getElementById('statusText');
+            
+            // بيانات ثابتة
+            const deviceId = "Bn5ctKi6s78vg4vSZqTkhvxZ/IHBNwetQdPAdVcASUZEHnL4xc4syklz6+iOUDCYWJfq/s7RsUXSf+tGfgp+8nw==";
+            
+            // تعيين بيانات الاختبار
+            function setTestData() {
+                emailInput.value = "lyhksjd@gmail.com";
+                passwordInput.value = "akhshsbs";
+            }
+            
+            // إعادة تعيين النموذج
+            function resetForm() {
+                emailInput.value = "";
+                passwordInput.value = "";
+                responseTextarea.value = "";
+                hideStatus();
+            }
+            
+            // عرض حالة التحميل
+            function showLoading(message) {
+                statusText.textContent = message;
+                statusDiv.className = "status loading";
+                statusDiv.style.display = "block";
+            }
+            
+            // عرض حالة النجاح
+            function showSuccess(message) {
+                statusText.textContent = message;
+                statusDiv.className = "status success";
+                statusDiv.style.display = "block";
+                
+                // إخفاء الرسالة بعد 5 ثوان
+                setTimeout(hideStatus, 5000);
+            }
+            
+            // عرض حالة الخطأ
+            function showError(message) {
+                statusText.textContent = message;
+                statusDiv.className = "status error";
+                statusDiv.style.display = "block";
+                
+                // إخفاء الرسالة بعد 7 ثوان
+                setTimeout(hideStatus, 7000);
+            }
+            
+            // إخفاء حالة الرسالة
+            function hideStatus() {
+                statusDiv.style.display = "none";
+            }
+            
+            // تسجيل الدخول إلى DeepSeek API
+            async function loginToDeepSeek() {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                if (!email || !password) {
+                    showError("يرجى إدخال البريد الإلكتروني وكلمة المرور");
+                    return;
+                }
+                
+                // تحضير البيانات
+                const data = {
+                    email: email,
+                    password: password,
+                    device_id: deviceId,
+                    os: "android"
+                };
+                
+                // تحضير الرؤوس
+                const headers = {
+                    'User-Agent': "DeepSeek/1.3.3 Android/35",
+                    'Accept': "application/json",
+                    'Accept-Encoding': "gzip",
+                    'Content-Type': "application/json",
+                    'x-client-platform': "android",
+                    'x-client-version': "1.3.3",
+                    'x-client-locale': "ar",
+                    'x-rangers-id': "7126802546089314058",
+                    'accept-charset': "UTF-8"
+                };
+                
+                // إظهار حالة التحميل
+                showLoading("جارٍ إرسال طلب تسجيل الدخول...");
+                
+                try {
+                    // محاولة الاتصال المباشر (قد يفشل بسبب CORS)
+                    const response = await fetch("https://chat.deepseek.com/api/v0/users/login", {
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify(data),
+                        mode: "cors" // محاولة تجاوز CORS
+                    });
+                    
+                    // تحقق من حالة الاستجابة
+                    if (response.ok) {
+                        const result = await response.json();
+                        responseTextarea.value = JSON.stringify(result, null, 2);
+                        showSuccess("تم تسجيل الدخول بنجاح!");
+                    } else {
+                        // إذا فشل الاتصال المباشر بسبب CORS، نستخدم طريقة بديلة
+                        handleCorsError();
+                    }
+                } catch (error) {
+                    // في حالة حدوث خطأ (غالباً بسبب CORS)، نستخدم طريقة المحاكاة
+                    handleCorsError();
+                }
+            }
+            
+            // معالجة خطأ CORS بمحاكاة الرد
+            function handleCorsError() {
+                showError("تعذر الاتصال بالخادم مباشرة بسبب سياسات CORS. يتم عرض نموذج استجابة محاكاة.");
+                
+                // محاكاة استجابة API (لأغراض العرض فقط)
+                const mockResponse = {
+                    "success": false,
+                    "error": "CORS Policy Error",
+                    "message": "تعذر الاتصال بالخادم مباشرة من المتصفح بسبب سياسات أمان CORS. في التطبيقات الحقيقية، يجب استخدام خادم وسيط.",
+                    "mock_data": {
+                        "user": {
+                            "id": "12345",
+                            "email": emailInput.value,
+                            "name": "مستخدم تجريبي"
+                        },
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkRlZXBTZWVrIFVzZXIiLCJpYXQiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                        "expires_in": 86400
+                    },
+                    "note": "هذه استجابة محاكاة. في التطبيق الحقيقي، استخدم خادم وسيط للاتصال بـ DeepSeek API."
+                };
+                
+                responseTextarea.value = JSON.stringify(mockResponse, null, 2);
+            }
+            
+            // إضافة مستمعي الأحداث
+            loginBtn.addEventListener('click', loginToDeepSeek);
+            resetBtn.addEventListener('click', resetForm);
+            
+            // تعيين بيانات الاختبار عند التحميل
+            setTestData();
+            
+            // إضافة تأثيرات بصرية عند التركيز
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.style.transform = 'translateY(-2px)';
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.style.transform = 'translateY(0)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
