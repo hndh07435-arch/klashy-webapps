@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عائلة البوتات - تصميم السفاحين</title>
+    <style>
+        /* -----------------------
+        التنسيق العام (CSS)
+        ----------------------- */
+
+        body {
+            /* الخلفية الداكنة */
+            background-color: #1a202c;
+            color: #e2e8f0; /* لون النص الفاتح */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            direction: rtl; /* دعم اللغة العربية */
+        }
+
+        .container {
+            max-width: 600px; /* عرض محدد مثل شاشة الهاتف */
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* -----------------------
+        تنسيق العنوان الرئيسي
+        ----------------------- */
+
+        .header {
+            text-align: center;
+            padding-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #ffcc00; /* لون ذهبي/أصفر مميز */
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: #a0aec0;
+            line-height: 1.5;
+        }
+
+        /* -----------------------
+        تنسيق قائمة البوتات
+        ----------------------- */
+
+        .bot-card {
+            background-color: #2d3748; /* خلفية أغمق للبطاقة */
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden; /* لإخفاء المحتوى الزائد */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .bot-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            cursor: pointer; /* للإشارة إلى أنه يمكن النقر عليه */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .bot-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .bot-info h2 {
+            font-size: 18px;
+            margin: 0 0 4px 0;
+            color: #e2e8f0;
+        }
+
+        .bot-info span {
+            font-size: 14px;
+            color: #a0aec0;
+            display: block;
+        }
+
+        .bot-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            background-color: #ffcc00; /* لون أيقونة افتراضي */
+            margin-left: 15px;
+            /* يمكن وضع صورة البوت هنا */
+            background-image: url('placeholder-icon.png'); /* استبدلها برابط الأيقونة */
+            background-size: cover;
+        }
+
+        .dropdown-arrow {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: #ffcc00;
+            transition: transform 0.3s ease;
+        }
+
+        /* تدوير السهم عند فتح التفاصيل */
+        .bot-header.active .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        /* -----------------------
+        تنسيق محتوى التفاصيل
+        ----------------------- */
+
+        .bot-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out; /* حركة سلسة للتوسيع */
+            padding: 0 15px;
+        }
+
+        .bot-details-content {
+            padding: 15px 0;
+            border-top: 1px solid #4a5568;
+        }
+
+        .bot-details p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #a0aec0;
+            margin-top: 0;
+        }
+
+        .bot-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .bot-details ul li {
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #e2e8f0;
+        }
+        
+        /* علامة صح أمام ميزات البوت */
+        .bot-details ul li::before {
+            content: '✓';
+            color: #68d391; /* لون أخضر للعلامة */
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-right: 5px;
+            margin-left: -1em;
+        }
+
+        .start-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            text-align: center;
+            background-image: linear-gradient(to right, #4299e1, #63b3ed); /* تدرج أزرق مثل الصورة */
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    
+    <div class="header">
+        <h1><span style="font-size: 36px;">👑</span> عائلة بوتات السفاحين</h1>
+        <p>كل ما تحتاجه من أدوات تيلجرام بأعلى جودة وأقوى أداء من فريق السفاحين الرسمي</p>
+    </div>
+
+    <div class="bot-card" id="faraana-bot">
+        
+        <div class="bot-header" onclick="toggleDetails('faraana-bot-details', this)">
+            <div class="bot-info">
+                <div class="bot-icon" style="background-image: url('https://i.imgur.com/QfT7dF0.png');"></div>
+                <div>
+                    <h2>بوت رشق السفاحين</h2>
+                    <span>@ElsfahenBot</span>
+                </div>
+            </div>
+            <div class="dropdown-arrow">
+                <span id="faraana-bot-arrow">⌵</span>
+            </div>
+        </div>
+
+        <div class="bot-details" id="faraana-bot-details">
+            <div class="bot-details-content">
+                <p>أقوى بوت رشق في تيلجرام - رشق تفاعلات، مشاهدات، تعليقات، ستوريهات، استفتاءات، لايكات مسابقات، تفاعلات مميزة، رشق قنوات خاصة، تمويل أعضاء حقيقية للمجموعات والبوتات، وخدمات احترافية لا نهائية.</p>
+                <ul>
+                    <li>رشق جميع أنواع التفاعلات والمشاهدات</li>
+                    <li>دعم القنوات الخاصة والعامة</li>
+                    <li>تمويل أعضاء حقيقية ومضمونة</li>
+                    <li>أسعار تنافسية وخدمة 24/7</li>
+                </ul>
+                <a href="https://t.me/FaraanaBot" class="start-button">ابدأ الآن</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="bot-card" id="roulette-bot">
+        
+        <div class="bot-header" onclick="toggleDetails('roulette-bot-details', this)">
+            <div class="bot-info">
+                 <div class="bot-icon" style="background-image: url('https://i.imgur.com/rNlO5d0.png');"></div>
+                <div>
+                    <h2>بوت روليت السفاحين</h2>
+                    <span>@ElsfahenBot</span>
+                </div>
+            </div>
+            <div class="dropdown-arrow">
+                <span id="roulette-bot-arrow">⌵</span>
+            </div>
+        </div>
+
+        <div class="bot-details" id="roulette-bot-details">
+            <div class="bot-details-content">
+                <p>بوت الروليت الأقوى لتنظيم المسابقات والألعاب في المجموعات مع نظام نقاط وجوائز متميز وموثوقية عالية في النتائج.</p>
+                <ul>
+                    <li>إدارة مسابقات الروليت بسهولة</li>
+                    <li>نظام متكامل لإدارة نقاط اللاعبين</li>
+                    <li>إعدادات مخصصة لكل مجموعة</li>
+                </ul>
+                <a href="https://t.me/xRolletBot" class="start-button">انضم للمتعة</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="bot-card" id="pharaoh-likes-bot">
+        
+        <div class="bot-header" onclick="toggleDetails('pharaoh-likes-bot-details', this)">
+            <div class="bot-info">
+                 <div class="bot-icon" style="background-image: url('https://i.imgur.com/R8K6Xz2.png');"></div>
+                <div>
+                    <h2>بوت مسابقات السفاحين</h2>
+                    <span>@PharaohLikesBot</span>
+                </div>
+            </div>
+            <div class="dropdown-arrow">
+                <span id="pharaoh-likes-bot-arrow">⌵</span>
+            </div>
+        </div>
+
+        <div class="bot-details" id="pharaoh-likes-bot-details">
+            <div class="bot-details-content">
+                <p>بوت متخصص في إدارة مسابقات اللايكات والتصويتات على تيلجرام بكل سهولة وشفافية ودعم للتصويتات السريعة والمنافسات الكبيرة.</p>
+                <ul>
+                    <li>إدارة مسابقات اللايكات والمشاهدات</li>
+                    <li>تتبع دقيق لنتائج التصويت</li>
+                    <li>واجهة سهلة الاستخدام للمستخدمين</li>
+                </ul>
+                <a href="https://t.me/ElsfahenBot" class="start-button">إطلاق مسابقة</a>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+
+
+<script>
+    function toggleDetails(detailsId, headerElement) {
+        const details = document.getElementById(detailsId);
+        
+        // إذا كان التفصيل مفتوحاً، أغلقه. إذا كان مغلقاً، افتحه.
+        if (details.style.maxHeight) {
+            details.style.maxHeight = null;
+            headerElement.classList.remove('active');
+        } else {
+            // أغلق أي تفاصيل أخرى مفتوحة أولاً
+            closeAllDetails();
+            
+            // افتح التفصيل الحالي
+            details.style.maxHeight = details.scrollHeight + "px"; // تعيين الارتفاع الفعلي
+            headerElement.classList.add('active');
+        }
+    }
+
+    function closeAllDetails() {
+        const allDetails = document.querySelectorAll('.bot-details');
+        const allHeaders = document.querySelectorAll('.bot-header');
+
+        allDetails.forEach(detail => {
+            detail.style.maxHeight = null;
+        });
+
+        allHeaders.forEach(header => {
+            header.classList.remove('active');
+        });
+    }
+
+    // لفتح تفاصيل البوت الأول عند التحميل (مثل الصورة الثانية)
+    document.addEventListener('DOMContentLoaded', (event) => {
+        const firstDetails = document.getElementById('faraana-bot-details');
+        const firstHeader = firstDetails.previousElementSibling; // الوصول لرأس البطاقة
+        
+        if(firstDetails && firstHeader) {
+             firstDetails.style.maxHeight = firstDetails.scrollHeight + "px";
+             firstHeader.classList.add('active');
+        }
+    });
+
+</script>
+
+</body>
+</html>
