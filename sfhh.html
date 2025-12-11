@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ning System | شبكة السفّاح</title>
+    <style>
+        /* استيراد خط عربي احترافي */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', monospace;
+        }
+
+        body {
+            background-color: #000;
+            color: #0f0;
+            overflow-x: hidden;
+        }
+
+        /* خلفية الماتريكس */
+        canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* الحاوية الرئيسية */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* رأس الصفحة */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-top: 20px;
+        }
+
+        .glitch-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            color: #fff;
+            text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+            animation: glow 2s infinite alternate;
+        }
+
+        .subtitle {
+            color: #0ff;
+            font-size: 1.1rem;
+            margin-top: 10px;
+            border-bottom: 2px solid #0f0;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        /* بطاقات البوتات */
+        .bot-card {
+            background: rgba(0, 20, 0, 0.7);
+            border: 1px solid #0f0;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform: translateY(20px);
+            opacity: 0;
+            animation: slideUp 0.6s forwards;
+        }
+
+        .bot-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+            border-color: #fff;
+        }
+
+        /* شريط جانبي جمالي للبطاقة */
+        .bot-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(180deg, #0f0, #000);
+        }
+
+        .bot-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .bot-title span {
+            color: #0f0;
+            margin-left: 10px;
+        }
+
+        .bot-desc {
+            color: #ccc;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .bot-link {
+            display: block;
+            background: transparent;
+            color: #0f0;
+            text-decoration: none;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #0f0;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bot-link:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        /* زر المطور */
+        .dev-section {
+            text-align: center;
+            margin-top: 50px;
+            margin-bottom: 20px;
+        }
+
+        .dev-btn {
+            background: linear-gradient(45deg, #800080, #ff00ff);
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+            transition: 0.3s;
+            display: inline-block;
+        }
+
+        .dev-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.8);
+        }
+
+        /* أنميشن */
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #0f0; }
+            to { text-shadow: 0 0 20px #0f0, 0 0 10px #fff; }
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* تأخير ظهور الكروت */
+        .bot-card:nth-child(1) { animation-delay: 0.1s; }
+        .bot-card:nth-child(2) { animation-delay: 0.2s; }
+        .bot-card:nth-child(3) { animation-delay: 0.3s; }
+        .bot-card:nth-child(4) { animation-delay: 0.4s; }
+        .bot-card:nth-child(5) { animation-delay: 0.5s; }
+        .bot-card:nth-child(6) { animation-delay: 0.6s; }
+        .bot-card:nth-child(7) { animation-delay: 0.7s; }
+        .bot-card:nth-child(8) { animation-delay: 0.8s; }
+        .bot-card:nth-child(9) { animation-delay: 0.9s; }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix"></canvas>
+
+    <div class="container">
+        <header>
+            <div class="glitch-wrapper">
+                <h1>✦⧼ 𝐍𝐢𝐧𝐠 𝐒𝐲𝐬𝐭𝐞𝐦 ⧽✦</h1>
+            </div>
+            <p class="subtitle">أقوى شبكة بوتات السفّاح المصري – نظام هاكر محترف ⚡💀</p>
+        </header>
+
+        <main>
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت فكّ وحظر أرقام واتساب</div>
+                <p class="bot-desc">نظام سايبر مخصص لاسترجاع وتفعيل الأرقام المحظورة بأحدث الثغرات.</p>
+                <a href="https://t.me/BotWhatsAppElsfah_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت أدوات Python للهكر</div>
+                <p class="bot-desc">أدوات اختراق، فحص، برمجة… نظام بايثون كامل بين يديك.</p>
+                <a href="https://t.me/Hakara_elsfahelmasry_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت تعليم الهكر والأمن السيبراني</div>
+                <p class="bot-desc">شروحات حصرية – أدوات نادرة – مسارات احترافية للمبتدئين والمحترفين.</p>
+                <a href="https://t.me/DarkSefahBot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت ملفات وتولز تلجرام</div>
+                <p class="bot-desc">سكربتات جاهزة – ملفات تشغيل – تحديثات مستمرة لكل ما تحتاجه.</p>
+                <a href="https://t.me/Bot_Hakara_Elsfah_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> متجر أدوات الاختراق والخدمات</div>
+                <p class="bot-desc">تولز مدفوع، خدمات VIP، اشتراكات، وأنظمة جاهزة للبيع.</p>
+                <a href="https://t.me/HakaraElsfahvip_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت أكوا لفكّ حظر الواتساب</div>
+                <p class="bot-desc">الجيل الأقوى والجديد من أنظمة إزالة الحظر المعقد.</p>
+                <a href="https://t.me/HakaraElsfahvip_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت سحب الداتا</div>
+                <p class="bot-desc">استخراج بيانات – فلترة دقيقة – استعلامات متقدمة وسريعة.</p>
+                <a href="https://t.me/elsfahelmasry10v_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت استضافة ملفات Python</div>
+                <p class="bot-desc">تشغيل بوتك 24/7 بدون توقف على سيرفرات قوية.</p>
+                <a href="https://t.me/BotHosting_py_Bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+
+            <section class="bot-card">
+                <div class="bot-title"><span>🔻</span> بوت العروض اليومية</div>
+                <p class="bot-desc">عروض حصرية يومية لا تفوتك.</p>
+                <a href="https://t.me/elsfah_elmasry_2vip_bot" class="bot-link">دخول للبوت ⚡</a>
+            </section>
+        </main>
+
+        <div class="dev-section">
+            <a href="#" class="dev-btn">✦ المطور: السفّاح المصري ✦</a>
+        </div>
+    </div>
+
+    <script>
+        // كود تأثير الماتريكس
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const nums = '0123456789';
+        const alphabet = katakana + latin + nums;
+
+        const fontSize = 16;
+        const columns = canvas.width / fontSize;
+
+        const rainDrops = [];
+
+        for( let x = 0; x < columns; x++ ) {
+            rainDrops[x] = 1;
+        }
+
+        const draw = () => {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0'; // لون النص (أخضر هكر)
+            ctx.font = fontSize + 'px monospace';
+
+            for(let i = 0; i < rainDrops.length; i++)
+            {
+                const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+                ctx.fillText(text, i*fontSize, rainDrops[i]*fontSize);
+
+                if(rainDrops[i]*fontSize > canvas.height && Math.random() > 0.975){
+                    rainDrops[i] = 0;
+                }
+                rainDrops[i]++;
+            }
+        };
+
+        setInterval(draw, 30);
+
+        // تعديل حجم الكانفس عند تغيير حجم الشاشة
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>
